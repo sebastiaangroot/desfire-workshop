@@ -1,0 +1,23 @@
+<h1 id="challenge-1-top-of-the-line-security">Challenge 1: Top of the
+line security</h1>
+<p>The security team bought these new fancy DESFire cards and quickly
+implemented a secret access code on the cards. The readers are
+programmed to read the secret access code from the cards and only allow
+access when the returned value is correct. The trace below was sniffed
+between a working card and the reader.</p>
+<p>Hint: The file content is in the format: <code>flag{.*}</code>, but
+to beat the challenge you must get the reader to light up the top LED
+with your own card.</p>
+<h2 id="files">Files</h2>
+<ul>
+<li><code>chal1.trace</code></li>
+</ul>
+<h2 id="commands">Commands</h2>
+<pre><code># analysis
+trace load -f ../challenges/1-top-of-the-line-security/chal1.trace
+hf mfdes list
+
+# programming
+hf mfdes createapp --aid &lt;app-id&gt;
+hf mfdes createfile --aid &lt;app-id&gt; --fid &lt;file-id&gt;
+hf mfdes write --aid &lt;app-id&gt; --fid &lt;file-id&gt; -d &lt;hex-encoded file contents&gt;</code></pre>

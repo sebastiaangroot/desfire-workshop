@@ -1,0 +1,40 @@
+<h1 id="challenge-3-inner-sanctum">Challenge 3: Inner sanctum</h1>
+<p>You have managed to gain access to the building, but the server room
+is still off-limits! Turns out the admin of this room created a separate
+application with stricter settings for access. They even managed to
+hand-roll different encryption keys for each unique card. Good luck
+getting into this one!</p>
+<p>At least you have managed to capture two valid traces from one
+working card and the reader.</p>
+<p>Hint: The file content is in the format:
+<code>[\x00]*flag{.*}</code>, but to beat the challenge you must get the
+reader to light up the bottom LED with your own card.</p>
+<h2 id="files">Files</h2>
+<ul>
+<li><code>chal3-1.trace</code></li>
+<li><code>chal3-2.trace</code></li>
+</ul>
+<h2 id="commands">Commands</h2>
+<pre><code># programming
+hf mfdes createapp --aid &lt;app-id&gt; --dstalgo &lt;app cipher&gt;
+hf mfdes changekey --newalgo &lt;app cipher&gt; --newkeyno &lt;key number&gt; --newkey &lt;hex-encoded key&gt;
+hf mfdes createfile --aid &lt;app-id&gt; --fid &lt;file-id&gt;
+hf mfdes write --aid &lt;app-id&gt; --fid &lt;file-id&gt; -d &lt;hex-encoded file contents&gt;</code></pre>
+<h2 id="hints">Hints</h2>
+<ol type="1">
+<li><p>This challenge is very error-prone. There are two trace files
+just to allow you to more easily identify which parts of the messages
+you should extract. Which parts of the messages are different? How many
+bytes would you expect the encrypted RndA / RndB / file contents
+be?</p></li>
+<li><p>Use the prepended null bytes in the file to your advantage! In
+order to cleanly decrypt the full plaintext, you would need to keep the
+IV state fully correct when you start decrypting the file contents.
+Since the file contents are prepended with known bytes, you can afford
+the first AES-CBC block to be mangled during decryption.</p></li>
+<li><p>The chosen key scheme is the following:
+<code>(9*\x00 bytes) .. (7-byte UID)</code></p></li>
+<li><p>The python3 script skeleton <code>decrypt.py</code> can be used
+to recreate the session key and decrypt the file from the trace
+(requires the <code>pycryptodome</code> package)</p></li>
+</ol>

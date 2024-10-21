@@ -1,0 +1,46 @@
+<h1 id="getting-familiar-with-desfire">Getting familiar with
+DESFire</h1>
+<h2 id="getting-started">Getting Started</h2>
+<p>If you have not done so already, prepare the proxmark3 client:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> xf proxmark3-4.18589.tar.gz</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> proxmark3-4.18589/</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sed</span> <span class="at">-e</span> <span class="st">&#39;s/^PLATFORM=PM3RDV4$/PLATFORM=PM3GENERIC/&#39;</span> Makefile.platform.sample <span class="op">&gt;</span> Makefile.platform</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> clean <span class="kw">&amp;&amp;</span> <span class="fu">make</span> <span class="at">-j</span></span></code></pre></div>
+<p>Connect the Proxmark3 over USB and check if you can communicate with
+it:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./pm3</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">[usb]</span> pm3 <span class="at">--</span><span class="op">&gt;</span> hw status</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">[#]</span> Memory</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ex">[#]</span>   BigBuf_size............. 41684</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">[#]</span>   Available memory........ 39376</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="ex">[#]</span> Tracing</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="ex">[#]</span>   tracing ................ 1</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="ex">[..]</span></span></code></pre></div>
+<p>Check if you can read your blank DESFire card:</p>
+<pre><code>[usb] pm3 --&gt; hf mfdes info
+
+[=] ---------------------------------- Tag Information ----------------------------------
+[+]               UID: 04 92 17 62 0E 15 90
+[+]      Batch number: 20 52 07 30 30
+[+]   Production date: week 02 / 2023
+[+]      Product type: MIFARE DESFire native IC (physical card)
+[..]</code></pre>
+<h2 id="challenges">Challenges</h2>
+<p>Each challenge contains a <code>challenge.md</code> with all the
+context you need. All challenges are accompanied with trace files you
+can load into proxmark in the following way:</p>
+<pre><code>./pm3 -o
+[offline] pm3 --&gt; trace load -f ../challenges/1-top-of-the-line-security/chal1.trace
+[offline] pm3 --&gt; hf mfdes list
+[..]
+      Start |        End | Src | Data (! denotes parity error) | CRC | Annotation
+------------+------------+-----+-------------------------------+-----+--------------------
+          0 |       1056 | Rdr |26                             |     | REQA
+       2228 |       4596 | Tag |44  03                         |     |
+      13088 |      15552 | Rdr |93  20                         |     | ANTICOLL
+[..]</code></pre>
+<p>Your goal for each challenge is to program your blank DESFire card to
+trick the reader into letting you through by making the LED
+corresponding to the challenge light up.</p>
